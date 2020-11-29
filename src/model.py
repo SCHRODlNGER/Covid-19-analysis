@@ -2,12 +2,13 @@ import torch
 from torch import nn
 
 class MV_LSTM(torch.nn.Module):
-    def __init__(self,n_features,seq_length):
+    def __init__(self,n_features,seq_length, timesteps):
         super(MV_LSTM, self).__init__()
         self.n_features = n_features
         self.seq_len = seq_length
+        self.timesteps = timesteps
         self.n_hidden = 30 # number of hidden states
-        self.n_layers = 4 # number of LSTM layers (stacked)
+        self.n_layers = 2 # number of LSTM layers (stacked)
         self.dropout = nn.Dropout(0.1) 
 
         self.l_lstm = torch.nn.LSTM(input_size = n_features, 
@@ -18,7 +19,7 @@ class MV_LSTM(torch.nn.Module):
         # according to pytorch docs LSTM output is 
         # (batch_size,seq_len, num_directions * hidden_size)
         # when considering batch_first = True
-        self.l_linear = torch.nn.Linear(self.n_hidden*self.seq_len, 100)
+        self.l_linear = torch.nn.Linear(self.n_hidden*self.seq_len, self.timesteps)
         self.sigmoid = nn.Sigmoid()
      
         
